@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" integrity="sha512-PgQMlq+nqFLV4ylk1gwUOgm6CtIIXkKwaIHp/PAIWHzig/lKZSEGKEysh0TCVbHJXCLN7WetD8TFecIky75ZfQ==" crossorigin="anonymous" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap" rel="stylesheet">
+</head>
+<body bgcolor="#effae3">
+    <div class="heading">
+     <h5>  <i class="fas fa-feather-alt" id="fa"> <span style=" font-family: 'Noto Sans SC', sans-serif;color:white;"> Create Notes</span>  </i></h5>
+    </div>
+    <button id="b1">Add note</button>
+</br></br>
+<div id="container"></div>
+<!-- <div class="note" >
+    <div class="note2">
+        <button class="b2">Edit</button>
+        <button class="b2">Delete</button>
+    </div>
+    <div class="main">
+        <textarea id="text"></textarea>
+    </div>
+</div>   -->
+
+
+
+
+
+
+<script>
+
+    const addButton= document.getElementById('b1'); // step 1
+
+    const updateData=()=> //last step 
+    {
+        const textAreaData= document.querySelectorAll('textarea');
+        const notes=[];
+
+        textAreaData.forEach((note)=>
+        {
+          return notes.push(note.value);
+        });
+
+        localStorage.setItem('notes',JSON.stringify(notes)) // converting values from array to string format.
+    }
+
+    const addNewNode=(text='')=> // step 3
+    {
+      const note = document.createElement('div'); // creating new div dynamically
+      note.classList.add('note'); //adding new class in created node ,dynamically.
+
+    //   <button class="b2 edit">Save</button>
+    //     <button class="b2 delete">Delete</button>
+
+     
+      const htmlData= `           
+      <div class="note2">
+        <div class="b2 edit"><i class="far fa-edit"></i></div>
+        <div class="b2 delete"><i class="far fa-trash-alt"></i></div>
+
+    </div>
+    <div class="main ${text ? "":"hidden"}"></div>
+        <textarea id="text" class="${text ?"hidden":""}"></textarea>`;
+   
+
+    note.insertAdjacentHTML('afterbegin',htmlData); // inserted html data to created div  //step 4
+    
+// gettimg references all all buttons from div.
+    const editButton=note.querySelector('.edit');
+    const delButton=note.querySelector('.delete');
+    const mainDiv=note.querySelector('.main');
+    const textArea=note.querySelector('textarea');
+
+  //deleting node  
+    delButton.addEventListener('click',()=>
+    {
+       note.remove();  // deleting created note.
+       updateData();
+    });
+
+    textArea.value=text;
+    mainDiv.innerHTML=text;
+
+    // editing node
+    editButton.addEventListener('click',()=>
+    {
+        // if(editButton.innerHTML==="Save")
+        // editButton.innerHTML="Edit";
+        // else
+        // editButton.innerHTML="Save";
+      mainDiv.classList.toggle('hidden');
+      textArea.classList.toggle('hidden');
+    });
+
+    textArea.addEventListener('change',(event)=>
+    {
+        const value= event.target.value;
+        mainDiv.innerHTML=value;
+
+
+        updateData();
+    });
+
+
+    document.getElementById("container").appendChild(note);
+    
+    }
+
+   
+    //getting data Back from local Storage.
+    const notes = JSON.parse(localStorage.getItem('notes'))
+    if(notes)
+    {notes.forEach((note)=>addNewNode(note))};
+
+
+    addButton.addEventListener('click',()=>{addNewNode()}); //step 2
+</script>
+</body>
+</html>
